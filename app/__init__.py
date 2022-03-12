@@ -6,12 +6,12 @@ from ujson import dump
 app = Flask(__name__)
 
 def create_file():
-    os.chdir("./database")
     default = {"data": []}
-    with open("database.json", "w") as json_file:
+    with open("database/database.json", "w") as json_file:
         dump(default, json_file, indent=2)
 
 def check_database_dir():
+    os.chdir("app")
     directories = os.listdir()
     parent_dir = os.getcwd()
     directory = "database"
