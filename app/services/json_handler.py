@@ -3,7 +3,7 @@ import os
 import ujson as json
 from ujson import dump
 
-def create_file():
+""" def create_file():
     default = {"data": []}
     with open("database/database.json", "w") as json_file:
         dump(default, json_file, indent=2)
@@ -17,21 +17,30 @@ def check_database_dir():
         for item in directories:
             if item != directory:
                 os.mkdir(path)
-                create_file()
+                create_file() """
 
 def read_json(database) -> list:
     try:
         with open(database, "r") as json_file:
-            dados = json.load(json_file)
-            return dados
-    except (FileNotFoundError, JSONDecodeError):
-        return []
+            data = json.load(json_file)
+            return data
+    except:
+        new_data = {"data": []}
+        with open(database, "w") as json_file:
+            dump(new_data, json_file, indent=2)
+        return new_data
 
-def write_json(database: list, payload: dict):
-    json_list = list(read_json(database))
-    json_list.append(payload)
+def write_json(database, payload):
+    
+    try:
+        json_list = read_json(database)["data"]
+        json_list.append(payload)
  
-    with open(database, "w") as json_file:
-        json.dump(json_list, json_file, indent=2)
+        with open(database, "w") as json_file:
+            dump({"data": json_list}, json_file, indent=2)
+        return payload
 
+    except:
+        with open(database, "w") as json_file:
+            dump({"data": [payload]}, json_file, indent=2)
         return payload
