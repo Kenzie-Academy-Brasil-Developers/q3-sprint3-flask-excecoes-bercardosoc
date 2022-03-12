@@ -7,6 +7,10 @@
     {
       "email": "barry@mail.com",
       "name": "Barry Allen"
+    },
+    {
+      "email": "bartosz@mail.com",
+      "name": "Bartosz Tiedemann"
     }
   ]
 }
