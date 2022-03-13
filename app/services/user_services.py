@@ -1,6 +1,8 @@
+from operator import indexOf
 from flask import request
 from ujson import load, dump
 from http import HTTPStatus
+import uuid
 import os
 
 
@@ -54,10 +56,12 @@ def creating_user():
 
     email = input_email.lower()
     name = input_name.title()
-
+    id = uuid.uuid1()
+    
     user_data = {
         "email": f"{email}",
-        "name": f"{name}"
+        "name": f"{name}",
+        "id": f"{id}"
     }
 
     for data in users["data"]:
