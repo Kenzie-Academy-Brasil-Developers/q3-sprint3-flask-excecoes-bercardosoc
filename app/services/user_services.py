@@ -3,6 +3,10 @@ from http import HTTPStatus
 from flask import request
 import os
 
+def read():
+    with open(f"./app/database/database.json", "r") as json_file:
+        return load(json_file), HTTPStatus.OK
+
 def create_database():
     default_database = {"data": []}
 
@@ -14,16 +18,12 @@ def create_database():
 def checking_database():
     
     try:
-        with open(f"./app/database/database.json", "r") as json_file:
-            readable_file = load(json_file)
-            return readable_file, HTTPStatus.OK
+        return read()
 
     except FileNotFoundError:
+
         create_database()
-        with open ("./app/database/database.json", "r") as json_file:
-            readable_file = load(json_file)
-            return readable_file, HTTPStatus.OK
-        
+        return read()
 
 def creating_user():
     users = ""
@@ -31,6 +31,7 @@ def creating_user():
     try:
         with open("./app/database/database.json", "r") as json_file:
             users = load(json_file)
+    
     except FileNotFoundError:
         create_database()
         with open ("./app/database/database.json", "r") as json_file:
@@ -41,13 +42,13 @@ def creating_user():
     email_type = type(request.get_json()["email"])
 
     if email_type != str and name_type != str:
-        return {"Wrong fields": [{"nome": f"{name_type}"}, {"email": f"{email_type}"}]}, HTTPStatus.BAD_REQUEST
+        return {"Wrong fields": [{"nome": f"{name_type.__name__}"}, {"email": f"{email_type.__name__}"}]}, HTTPStatus.BAD_REQUEST
     
     elif email_type != str:
-        return {"Wrong fields": {"email": f"{email_type}"}}, HTTPStatus.BAD_REQUEST
+        return {"Wrong fields": {"email": f"{email_type.__name__}"}}, HTTPStatus.BAD_REQUEST
     
     elif name_type != str:
-        return {"Wrong fields": {"nome": f"{name_type}"}}, HTTPStatus.BAD_REQUEST
+        return {"Wrong fields": {"nome": f"{name_type.__name__}"}}, HTTPStatus.BAD_REQUEST
 
     input_email = request.get_json()["email"]
     input_name  = request.get_json()["name"]
