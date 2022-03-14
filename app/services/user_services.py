@@ -3,47 +3,39 @@ from http import HTTPStatus
 from flask import request
 import os
 
-def checking_database():
-    
+def create_database():
     default_database = {"data": []}
 
-    try:
-        os.mkdir("./app/database")
-        os.system("touch app/database/database.json")
-        with open(f"./app/database/database.json", "a") as json_file:
-            dump(default_database, json_file, indent=2)
-        with open(f"./app/database/database.json", "r") as json_file:
-            readable_file = json_file.read()
-        return readable_file, HTTPStatus.OK
+    os.mkdir("app/database")
+    os.system("touch app/database/database.json")
+    with open(f"./app/database/database.json", "a") as json_file:
+        dump(default_database, json_file, indent=2)
+
+def checking_database():
     
-    except FileExistsError:
+    try:
         with open(f"./app/database/database.json", "r") as json_file:
-            readable_file = json_file.read()
-        if readable_file == "":
-            with open(f"./app/database/database.json", "a") as json_file:
-                json_file.write('{"data": []}')
-            with open(f"./app/database/database.json", "r") as json_file:
-                readable_file = json_file.read()
-                return readable_file, HTTPStatus.OK
-        else: 
-            with open(f"./app/database/database.json", "r") as json_file:
-                readable_file = load(json_file)
-                return readable_file, HTTPStatus.OK
+            readable_file = load(json_file)
+            return readable_file, HTTPStatus.OK
+
+    except FileNotFoundError:
+        create_database()
+        with open ("./app/database/database.json", "r") as json_file:
+            readable_file = load(json_file)
+            return readable_file, HTTPStatus.OK
+        
 
 def creating_user():
     users = ""
-    default_database = {"data": []}
 
     try:
         with open("./app/database/database.json", "r") as json_file:
             users = load(json_file)
     except FileNotFoundError:
-        os.mkdir("app/database")
-        os.system("touch app/database/database.json")
-        with open(f"./app/database/database.json", "a") as json_file:
-            dump(default_database, json_file, indent=2)
+        create_database()
         with open ("./app/database/database.json", "r") as json_file:
             users = load(json_file)
+
 
     name_type = type(request.get_json()["name"])
     email_type = type(request.get_json()["email"])
