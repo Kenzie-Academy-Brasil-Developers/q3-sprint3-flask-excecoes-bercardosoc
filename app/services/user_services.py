@@ -1,17 +1,17 @@
-from operator import indexOf
-from flask import request
 from ujson import load, dump
 from http import HTTPStatus
-import uuid
+from flask import request
 import os
 
-
 def checking_database():
+    
+    default_database = {"data": []}
+
     try:
         os.mkdir("./app/database")
         os.system("touch app/database/database.json")
         with open(f"./app/database/database.json", "a") as json_file:
-            json_file.write('{"data": []}')
+            dump(default_database, json_file, indent=2)
         with open(f"./app/database/database.json", "r") as json_file:
             readable_file = json_file.read()
         return readable_file, HTTPStatus.OK
@@ -32,6 +32,7 @@ def checking_database():
 
 def creating_user():
     users = ""
+    default_database = {"data": []}
 
     try:
         with open("./app/database/database.json", "r") as json_file:
@@ -40,23 +41,28 @@ def creating_user():
         os.mkdir("app/database")
         os.system("touch app/database/database.json")
         with open(f"./app/database/database.json", "a") as json_file:
-            json_file.write("{data: []}")
+            dump(default_database, json_file, indent=2)
         with open ("./app/database/database.json", "r") as json_file:
             users = load(json_file)
 
-    if type(request.get_json()["email"]) != str and type(request.get_json()["name"]) != str:
-        return {"message": "Wrong fields format"}, HTTPStatus.BAD_REQUEST
-    elif type(request.get_json()["email"]) != str:
-        return {"message": "Wrong email field format"}, HTTPStatus.BAD_REQUEST
-    elif type(request.get_json()["name"]) != str:
-        return {"message": "Wrong name field format"}, HTTPStatus.BAD_REQUEST
+    name_type = type(request.get_json()["name"])
+    email_type = type(request.get_json()["email"])
+
+    if email_type != str and name_type != str:
+        return {"Wrong fields": [{"nome": f"{name_type}"}, {"email": f"{email_type}"}]}, HTTPStatus.BAD_REQUEST
+    
+    elif email_type != str:
+        return {"Wrong fields": {"email": f"{email_type}"}}, HTTPStatus.BAD_REQUEST
+    
+    elif name_type != str:
+        return {"Wrong fields": {"nome": f"{name_type}"}}, HTTPStatus.BAD_REQUEST
 
     input_email = request.get_json()["email"]
     input_name  = request.get_json()["name"]
 
     email = input_email.lower()
     name = input_name.title()
-    id = uuid.uuid1()
+    id = len(users["data"]) + 1
     
     user_data = {
         "email": f"{email}",

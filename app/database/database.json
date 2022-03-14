@@ -2,25 +2,8 @@
   "data": [
     {
       "email": "bernardo@mail.com",
-      "name": "Bernardo"
-    },
-    {
-      "email": "barry@mail.com",
-      "name": "Barry Allen"
-    },
-    {
-      "email": "bartosz@mail.com",
-      "name": "Bartosz Tiedemann"
-    },
-    {
-      "email": "pepe@mail.com",
-      "name": "Dean",
-      "id": "08dcfe18-a2f0-11ec-9aaf-17d83eb22dda"
-    },
-    {
-      "email": "rico@mail.com",
-      "name": "Rico",
-      "id": "180804b4-a2f0-11ec-9aaf-17d83eb22dda"
+      "name": "Bernardo Guiselini",
+      "id": "1"
     }
   ]
 }
